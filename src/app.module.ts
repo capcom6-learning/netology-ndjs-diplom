@@ -5,6 +5,7 @@ import { RequestsLoggerMiddleware } from './core/middlewares';
 import { UsersModule } from './modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { HotelsModule } from './modules/hotels/hotels.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       }),
     }),
     UsersModule,
+    HotelsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

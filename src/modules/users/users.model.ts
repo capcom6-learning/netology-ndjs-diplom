@@ -17,6 +17,4 @@ export class User {
     role: Role;
 }
 
-export type UserDocument = HydratedDocument<User>;
-
 export const UserModel = SchemaFactory.createForClass(User);

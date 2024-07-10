@@ -1,23 +1,23 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from './users.model';
-import { UsersService } from './users.service';
+import { HotelRoom } from '../hotels.model';
+import { HotelRoomsService } from './hotel-rooms.service';
 
-describe('UsersService', () => {
-  let service: UsersService;
+describe('HotelRoomsService', () => {
+  let service: HotelRoomsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
+        HotelRoomsService,
         {
-          provide: getModelToken(User.name),
+          provide: getModelToken(HotelRoom.name),
           useValue: {},
         },
       ],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get<HotelRoomsService>(HotelRoomsService);
   });
 
   it('should be defined', () => {
