@@ -5,6 +5,10 @@ export class SafeUserDto {
     name: string;
     contactPhone?: string;
     role: Role;
+
+    constructor(data: Partial<SafeUserDto>) {
+        Object.assign(this, data);
+    }
 }
 
 export class CreateUserDto extends SafeUserDto {
@@ -13,4 +17,9 @@ export class CreateUserDto extends SafeUserDto {
 
 export class UserDto extends SafeUserDto {
     passwordHash: string;
+
+    constructor(data: Partial<UserDto>) {
+        super(data);
+        Object.assign(this, data);
+    }
 }
