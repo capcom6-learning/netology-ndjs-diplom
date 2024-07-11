@@ -12,7 +12,7 @@ export class Hotel {
 
 @Schema({ timestamps: true })
 export class HotelRoom {
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Hotel', required: true })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Hotel.name, required: true })
     hotel: Hotel;
     @Prop()
     description?: string;
@@ -22,5 +22,5 @@ export class HotelRoom {
     isEnabled: boolean;
 }
 
-export const HotelModel = SchemaFactory.createForClass(Hotel)
-export const HotelRoomModel = SchemaFactory.createForClass(HotelRoom)
+export const HotelModel = SchemaFactory.createForClass(Hotel);
+export const HotelRoomModel = SchemaFactory.createForClass(HotelRoom);

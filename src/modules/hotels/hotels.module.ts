@@ -11,5 +11,6 @@ import { HotelRoomsService, HotelsService } from './services';
     ])
   ],
   providers: [HotelsService, HotelRoomsService],
+  exports: [HotelsService, HotelRoomsService],
 })
 export class HotelsModule { }
