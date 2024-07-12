@@ -36,7 +36,7 @@ export class HotelsService implements IHotelService {
             .limit(params.limit)
             .exec();
 
-        return hotels.map(hotel => new HotelDto(hotel.toObject()));
+        return hotels.map(hotel => new HotelDto(hotel.toObject({ getters: true })));
     }
 
     async update(id: ID, data: UpdateHotelDto): Promise<HotelDto> {
