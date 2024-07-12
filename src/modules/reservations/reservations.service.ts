@@ -9,7 +9,7 @@ import { Reservation } from './reservations.model';
 @Injectable()
 export class ReservationsService implements IReservationService {
     constructor(
-        @InjectModel(Reservation.name) private readonly reservationModel: Model<ReservationDto>,
+        @InjectModel(Reservation.name) private readonly reservationModel: Model<Reservation>,
     ) { }
 
     async addReservation(data: ReservationDto): Promise<ReservationDto> {
@@ -36,8 +36,8 @@ export class ReservationsService implements IReservationService {
         const reservations = await this.reservationModel
             .find({
                 userId: filter.userId,
-                dateStart: { $gte: filter.dateStart },
-                dateEnd: { $lte: filter.dateEnd },
+                dateStart: { $lte: filter.dateEnd },
+                dateEnd: { $gte: filter.dateStart },
             })
             .exec();
 
