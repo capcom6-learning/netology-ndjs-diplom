@@ -7,7 +7,7 @@ export class SupportRequest {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: true })
     user: User;
 
-    @Prop({ required: true })
+    @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: "Message", required: true })
     messages: Message[];
 
     @Prop({ required: true, default: true })

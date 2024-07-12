@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageModel, SupportRequest, SupportRequestModel } from './chats.model';
-import { ChatsService } from './chats.service';
+import { SupportRequestsClientService, SupportRequestsEmployeeService, SupportRequestsService } from './services';
 
 @Module({
     imports: [
@@ -10,6 +10,10 @@ import { ChatsService } from './chats.service';
             { name: Message.name, schema: MessageModel },
         ]),
     ],
-    providers: [ChatsService],
+    providers: [
+        SupportRequestsService,
+        SupportRequestsClientService,
+        SupportRequestsEmployeeService,
+    ],
 })
 export class ChatsModule { }

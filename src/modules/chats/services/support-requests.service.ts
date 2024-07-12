@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Message, SupportRequest, SupportRequestModel } from './chats.model';
+import { EventEmitter } from 'events';
 import { Model } from 'mongoose';
-import { GetChatListParams, ISupportRequestService } from './chats.interface';
 import { ID } from 'src/common/types';
-import { SupportRequestDto, SendMessageDto, MessageDto } from './chats.dto';
-import EventEmitter from 'events';
+import { MessageDto, SendMessageDto, SupportRequestDto } from '../chats.dto';
+import { GetChatListParams, ISupportRequestService } from '../chats.interface';
+import { Message, SupportRequest } from '../chats.model';
 
 @Injectable()
-export class ChatsService implements ISupportRequestService {
+export class SupportRequestsService implements ISupportRequestService {
     private readonly eventsEmitter = new EventEmitter<{ "message": [{ supportRequest: SupportRequestDto, message: MessageDto }] }>();
 
     constructor(
         @InjectModel(SupportRequest.name) private readonly supportRequestModel: Model<SupportRequest>,
         @InjectModel(Message.name) private readonly messageModel: Model<Message>,
-    ) { }
+    ) {
+    }
 
     async findSupportRequests(params: GetChatListParams): Promise<SupportRequestDto[]> {
         const query: {
@@ -58,7 +59,8 @@ export class ChatsService implements ISupportRequestService {
             throw new Error('Support request not found');
         }
 
-        return supportRequest.messages.map(message => new MessageDto(message));
+        // return supportRequest.messages.map(message => new MessageDto({...message, user: message.author.id}));
+        throw new Error('Method not implemented.');
     }
 
     subscribe(handler: (supportRequest: SupportRequestDto, message: MessageDto) => void): () => void {

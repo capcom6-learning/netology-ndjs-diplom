@@ -1,13 +1,14 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RequestsLoggerMiddleware } from './core/middlewares';
-import { UsersModule } from './modules/users/users.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ChatsModule } from './modules/chats/chats.module';
 import { HotelsModule } from './modules/hotels/hotels.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
-import { ChatsModule } from './modules/chats/chats.module';
+import { UsersModule } from './modules/users/users.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ChatsModule } from './modules/chats/chats.module';
     HotelsModule,
     ReservationsModule,
     ChatsModule,
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
