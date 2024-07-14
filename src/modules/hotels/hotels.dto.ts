@@ -1,3 +1,7 @@
+import { ID } from "src/common/types";
+import { HotelRoom, HotelRoomDocument } from "./hotels.model";
+import mongoose from "mongoose";
+
 export class HotelDto {
     id: string;
     title: string;
@@ -14,12 +18,13 @@ export class HotelDto {
     }
 }
 
-export type CreateHotelDto = Omit<HotelDto, 'id' | 'createdAt' | 'updatedAt'>
+export type CreateHotelDto = Omit<HotelDto, 'id' | 'createdAt' | 'updatedAt'>;
 
-export type UpdateHotelDto = Partial<CreateHotelDto>
+export type UpdateHotelDto = Partial<CreateHotelDto>;
 
 export class HotelRoomDto {
     id: string;
+    hotelId: ID;
     description?: string;
     images: string[];
     isEnabled: boolean;
@@ -28,15 +33,26 @@ export class HotelRoomDto {
 
     constructor(hotelRoom: HotelRoomDto) {
         this.id = hotelRoom.id;
+        this.hotelId = hotelRoom.hotelId;
         this.description = hotelRoom.description;
         this.images = hotelRoom.images;
         this.isEnabled = hotelRoom.isEnabled;
         this.createdAt = hotelRoom.createdAt;
         this.updatedAt = hotelRoom.updatedAt;
     }
+
+    static from(hotelRoomModel: HotelRoomDocument) {
+        console.log(hotelRoomModel.hotel.toString());
+        return new HotelRoomDto(
+            {
+                ...hotelRoomModel.toObject({ getters: true }),
+                hotelId: hotelRoomModel.hotel.toString(),
+            },
+        );
+    }
 }
 
 
-export type CreateHotelRoomDto = Omit<HotelRoomDto, 'id' | 'createdAt' | 'updatedAt'>
+export type CreateHotelRoomDto = Omit<HotelRoomDto, 'id' | 'createdAt' | 'updatedAt'>;
 
-export type UpdateHotelRoomDto = Partial<CreateHotelRoomDto>
+export type UpdateHotelRoomDto = Partial<CreateHotelRoomDto>;

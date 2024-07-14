@@ -24,3 +24,5 @@ export class HotelRoom {
 
 export const HotelModel = SchemaFactory.createForClass(Hotel);
 export const HotelRoomModel = SchemaFactory.createForClass(HotelRoom);
+
+export type HotelRoomDocument = mongoose.HydratedDocument<HotelRoom>;

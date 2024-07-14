@@ -24,7 +24,7 @@ export class HotelsService implements IHotelService {
             throw new NotFoundException('Hotel not found');
         }
 
-        return new HotelDto(hotel.toObject());
+        return new HotelDto(hotel.toObject({ getters: true }));
     }
 
     async search(params: SearchHotelParams): Promise<HotelDto[]> {
@@ -45,6 +45,6 @@ export class HotelsService implements IHotelService {
             throw new NotFoundException('Hotel not found');
         }
 
-        return new HotelDto(hotel.toObject());
+        return new HotelDto(hotel.toObject({ getters: true }));
     }
 }

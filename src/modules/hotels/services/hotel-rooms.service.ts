@@ -5,18 +5,25 @@ import { ID } from 'src/common/types';
 import { CreateHotelRoomDto, HotelRoomDto, UpdateHotelRoomDto } from '../hotels.dto';
 import { IHotelRoomService, SearchRoomsParams } from '../hotels.interface';
 import { HotelRoom } from '../hotels.model';
+import { HotelsService } from './hotels.service';
 
 @Injectable()
 export class HotelRoomsService implements IHotelRoomService {
     constructor(
         @InjectModel(HotelRoom.name) private readonly hotelRoomModel: Model<HotelRoom>,
+        private readonly hotelsService: HotelsService,
     ) { }
 
     async create(data: CreateHotelRoomDto): Promise<HotelRoomDto> {
-        const room = new this.hotelRoomModel(data);
+        const hotel = await this.hotelsService.findById(data.hotelId);
+        if (!hotel) {
+            throw new NotFoundException('Hotel not found');
+        }
+
+        const room = new this.hotelRoomModel({ ...data, hotel: hotel.id });
         await room.save();
 
-        return new HotelRoomDto(room.toObject());
+        return new HotelRoomDto(room.toObject({ getters: true }));
     }
 
     async findById(id: ID): Promise<HotelRoomDto> {
@@ -25,16 +32,27 @@ export class HotelRoomsService implements IHotelRoomService {
             throw new NotFoundException('Room not found');
         }
 
-        return new HotelRoomDto(room.toObject());
+        return new HotelRoomDto(room.toObject({ getters: true }));
     }
 
     async search(params: SearchRoomsParams): Promise<HotelRoomDto[]> {
+        const query: {
+            hotel?: ID;
+            isEnabled?: boolean;
+        } = {};
+        if (params.hotel) {
+            query.hotel = params.hotel;
+        }
+        if (params.isEnabled !== undefined) {
+            query.isEnabled = params.isEnabled;
+        }
+
         const rooms = await this.hotelRoomModel
-            .find({ hotel: params.hotel, isEnabled: params.isEnabled })
+            .find(query)
             .skip(params.offset)
             .limit(params.limit);
 
-        return rooms.map((room) => new HotelRoomDto(room.toObject()));
+        return rooms.map((room) => HotelRoomDto.from(room));
     }
 
     async update(id: ID, data: UpdateHotelRoomDto): Promise<HotelRoomDto> {
@@ -43,6 +61,6 @@ export class HotelRoomsService implements IHotelRoomService {
             throw new NotFoundException('Room not found');
         }
 
-        return new HotelRoomDto(room.toObject());
+        return new HotelRoomDto(room.toObject({ getters: true }));
     }
 }

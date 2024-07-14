@@ -2,6 +2,7 @@ import { Body, Controller, ParseFilePipeBuilder, Post, UploadedFiles, UseInterce
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { HotelRoomsService } from 'src/modules/hotels/services';
 import { CreateHotelRoomRequest } from './hotel-rooms.dto';
+import { CreateHotelRoomDto } from 'src/modules/hotels/hotels.dto';
 
 @Controller('admin/hotel-rooms')
 export class HotelRoomsController {
@@ -21,7 +22,12 @@ export class HotelRoomsController {
                 .build()
         ) images: Express.Multer.File[]
     ) {
-        console.log(data);
-        console.log(images);
+        const hotelRoom: CreateHotelRoomDto = {
+            ...data,
+            images: images.map((image) => image.filename),
+            isEnabled: true,
+        };
+
+        return this.hotelRoomsService.create(hotelRoom);
     }
 }
