@@ -1,5 +1,5 @@
 import { ID } from "src/common/types";
-import { HotelRoom, HotelRoomDocument } from "./hotels.model";
+import { HotelDocument, HotelRoom, HotelRoomDocument } from "./hotels.model";
 import mongoose from "mongoose";
 
 export class HotelDto {
@@ -9,12 +9,20 @@ export class HotelDto {
     createdAt: Date;
     updatedAt: Date;
 
-    constructor(hotel: HotelDto) {
+    protected constructor(hotel: HotelDto) {
         this.id = hotel.id;
         this.title = hotel.title;
         this.description = hotel.description;
         this.createdAt = hotel.createdAt;
         this.updatedAt = hotel.updatedAt;
+    }
+
+    static from(hotelModel: HotelDocument) {
+        return new HotelDto(
+            {
+                ...hotelModel.toObject({ getters: true }),
+            },
+        );
     }
 }
 
@@ -24,16 +32,16 @@ export type UpdateHotelDto = Partial<CreateHotelDto>;
 
 export class HotelRoomDto {
     id: string;
-    hotelId: ID;
+    hotel: HotelDto;
     description?: string;
     images: string[];
     isEnabled: boolean;
     createdAt: Date;
     updatedAt: Date;
 
-    constructor(hotelRoom: HotelRoomDto) {
+    protected constructor(hotelRoom: HotelRoomDto) {
         this.id = hotelRoom.id;
-        this.hotelId = hotelRoom.hotelId;
+        this.hotel = hotelRoom.hotel;
         this.description = hotelRoom.description;
         this.images = hotelRoom.images;
         this.isEnabled = hotelRoom.isEnabled;
@@ -46,13 +54,15 @@ export class HotelRoomDto {
         return new HotelRoomDto(
             {
                 ...hotelRoomModel.toObject({ getters: true }),
-                hotelId: hotelRoomModel.hotel.toString(),
+                hotel: HotelDto.from(hotelRoomModel.hotel),
             },
         );
     }
 }
 
 
-export type CreateHotelRoomDto = Omit<HotelRoomDto, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateHotelRoomDto = Omit<HotelRoomDto, 'id' | 'hotel' | 'createdAt' | 'updatedAt'> & {
+    hotelId: ID
+};
 
 export type UpdateHotelRoomDto = Partial<CreateHotelRoomDto>;

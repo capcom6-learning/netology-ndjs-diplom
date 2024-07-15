@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ID } from 'src/common/types';
 import { CreateHotelDto, HotelDto, UpdateHotelDto } from '../hotels.dto';
 import { IHotelService, SearchHotelParams } from '../hotels.interface';
-import { Hotel } from '../hotels.model';
+import { Hotel, HotelRoom } from '../hotels.model';
 
 @Injectable()
 export class HotelsService implements IHotelService {
@@ -15,7 +15,7 @@ export class HotelsService implements IHotelService {
     async create(data: CreateHotelDto): Promise<HotelDto> {
         const hotel = new this.hotelModel(data);
         await hotel.save();
-        return new HotelDto(hotel.toObject());
+        return HotelDto.from(hotel);
     }
 
     async findById(id: ID): Promise<HotelDto> {
@@ -24,19 +24,24 @@ export class HotelsService implements IHotelService {
             throw new NotFoundException('Hotel not found');
         }
 
-        return new HotelDto(hotel.toObject({ getters: true }));
+        return HotelDto.from(hotel);
     }
 
     async search(params: SearchHotelParams): Promise<HotelDto[]> {
+        const query: {
+            title?: string | { $regex: RegExp };
+        } = {};
+        if (params.title) {
+            query.title = { $regex: new RegExp(params.title, 'i') };
+        }
+
         const hotels = await this.hotelModel
-            .find({
-                title: { $regex: new RegExp(params.title, 'i') },
-            })
+            .find(query)
             .skip(params.offset)
             .limit(params.limit)
             .exec();
 
-        return hotels.map(hotel => new HotelDto(hotel.toObject({ getters: true })));
+        return hotels.map(hotel => HotelDto.from(hotel));
     }
 
     async update(id: ID, data: UpdateHotelDto): Promise<HotelDto> {
@@ -45,6 +50,6 @@ export class HotelsService implements IHotelService {
             throw new NotFoundException('Hotel not found');
         }
 
-        return new HotelDto(hotel.toObject({ getters: true }));
+        return HotelDto.from(hotel);
     }
 }

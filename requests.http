@@ -7,7 +7,7 @@ GET {{baseUrl}} HTTP/1.1
 GET {{baseUrl}}/common/hotel-rooms HTTP/1.1
 
 ###
-GET {{baseUrl}}/common/hotel-rooms/65effb693a884796715365f9 HTTP/1.1
+GET {{baseUrl}}/common/hotel-rooms/66945bee31a60498b7814af6 HTTP/1.1
 
 ###
 POST {{baseUrl}}/admin/hotels HTTP/1.1

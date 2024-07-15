@@ -21,18 +21,18 @@ export class HotelRoomsService implements IHotelRoomService {
         }
 
         const room = new this.hotelRoomModel({ ...data, hotel: hotel.id });
-        await room.save();
+        await (await room.save()).populate('hotel');
 
-        return new HotelRoomDto(room.toObject({ getters: true }));
+        return HotelRoomDto.from(room);
     }
 
     async findById(id: ID): Promise<HotelRoomDto> {
-        const room = await this.hotelRoomModel.findById(id);
+        const room = await this.hotelRoomModel.findById(id).populate('hotel');
         if (!room) {
             throw new NotFoundException('Room not found');
         }
 
-        return new HotelRoomDto(room.toObject({ getters: true }));
+        return HotelRoomDto.from(room);
     }
 
     async search(params: SearchRoomsParams): Promise<HotelRoomDto[]> {
@@ -49,6 +49,7 @@ export class HotelRoomsService implements IHotelRoomService {
 
         const rooms = await this.hotelRoomModel
             .find(query)
+            .populate('hotel')
             .skip(params.offset)
             .limit(params.limit);
 
@@ -61,6 +62,6 @@ export class HotelRoomsService implements IHotelRoomService {
             throw new NotFoundException('Room not found');
         }
 
-        return new HotelRoomDto(room.toObject({ getters: true }));
+        return HotelRoomDto.from(room);
     }
 }
