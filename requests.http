@@ -53,3 +53,35 @@ Content-Type: image/jpeg
 
 < ./assets/lotus-design-n-print-WgkA3CSFrjc-unsplash.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+PUT {{baseUrl}}/admin/hotel-rooms/66945bee31a60498b7814af6 HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+Room #{{$randomInt 1 100}}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="hotelId"
+
+6693c515d38027c4f6041670
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"
+
+cabd694aab8e49822712d5cfb1f3531c.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"
+
+cabd694aab8e49822712d5cfb1f3531c.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="alexandra-gorn-JIUjvqe2ZHg-unsplash.jpg"
+Content-Type: image/jpeg
+
+< ./assets/alexandra-gorn-JIUjvqe2ZHg-unsplash.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="lotus-design-n-print-WgkA3CSFrjc-unsplash.jpg"
+Content-Type: image/jpeg
+
+< ./assets/lotus-design-n-print-WgkA3CSFrjc-unsplash.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

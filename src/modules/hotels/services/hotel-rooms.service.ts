@@ -57,7 +57,17 @@ export class HotelRoomsService implements IHotelRoomService {
     }
 
     async update(id: ID, data: UpdateHotelRoomDto): Promise<HotelRoomDto> {
-        const room = await this.hotelRoomModel.findByIdAndUpdate(id, data, { new: true });
+        if (data.hotelId) {
+            const hotel = await this.hotelsService.findById(data.hotelId);
+            if (!hotel) {
+                throw new NotFoundException('Hotel not found');
+            }
+        }
+
+        // TODO: validate image names
+
+        const room = await this.hotelRoomModel.findByIdAndUpdate(id, data, { new: true })
+            .populate('hotel');
         if (!room) {
             throw new NotFoundException('Room not found');
         }
