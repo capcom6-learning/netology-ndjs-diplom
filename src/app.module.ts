@@ -9,6 +9,7 @@ import { HotelsModule } from './modules/hotels/hotels.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { UsersModule } from './modules/users/users.module';
 import { ApiModule } from './api/api.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ApiModule } from './api/api.module';
     ReservationsModule,
     ChatsModule,
     ApiModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
