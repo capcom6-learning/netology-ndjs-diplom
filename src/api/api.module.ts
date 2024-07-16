@@ -8,6 +8,8 @@ import * as multer from 'multer';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
+import { ReservationsController } from './client/reservations/reservations.controller';
+import { ReservationsController } from './manager/reservations/reservations.controller';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { ConfigService } from '@nestjs/config';
     CommonHotelRoomsController,
     AdminHotelRoomsController,
     HotelsController,
+    ReservationsController,
   ]
 })
 export class ApiModule { }

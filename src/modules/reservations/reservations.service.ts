@@ -5,16 +5,23 @@ import { ID } from 'src/common/types';
 import { ReservationDto } from './reservations.dto';
 import { IReservationService, SearchReservationParams } from './reservations.interface';
 import { Reservation } from './reservations.model';
+import { HotelRoomsService } from '../hotels/services';
 
 @Injectable()
 export class ReservationsService implements IReservationService {
     constructor(
         @InjectModel(Reservation.name) private readonly reservationModel: Model<Reservation>,
+        private readonly hotelRoomsService: HotelRoomsService,
     ) { }
 
     async addReservation(data: ReservationDto): Promise<ReservationDto> {
+        const room = await this.hotelRoomsService.findById(data.roomId);
+        if (!room) {
+            throw new Error('Room not found');
+        }
+
         const existingReservation = await this.reservationModel.findOne({
-            hotelId: data.hotelId,
+            hotelId: room.hotel,
             roomId: data.roomId,
             dateStart: { $lte: data.dateEnd },
             dateEnd: { $gte: data.dateStart },
