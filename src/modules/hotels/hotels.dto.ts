@@ -50,7 +50,6 @@ export class HotelRoomDto {
     }
 
     static from(hotelRoomModel: HotelRoomDocument) {
-        console.log(hotelRoomModel.hotel.toString());
         return new HotelRoomDto(
             {
                 ...hotelRoomModel.toObject({ getters: true }),

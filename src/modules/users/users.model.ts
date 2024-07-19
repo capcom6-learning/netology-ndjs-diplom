@@ -1,3 +1,4 @@
+import { EXCEPTION_FILTERS_METADATA } from "@nestjs/common/constants";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
@@ -18,3 +19,5 @@ export class User {
 }
 
 export const UserModel = SchemaFactory.createForClass(User);
+
+export type UserDocument = HydratedDocument<User>;

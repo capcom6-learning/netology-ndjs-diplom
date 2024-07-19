@@ -1,12 +1,16 @@
-import { Body, Controller, Param, ParseFilePipeBuilder, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Param, ParseFilePipeBuilder, Post, Put, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
 import { HotelRoomsService } from 'src/modules/hotels/services';
 import { CreateHotelRoomRequest, UpdateHotelRoomRequest } from './hotel-rooms.dto';
 import { CreateHotelRoomDto, UpdateHotelRoomDto } from 'src/modules/hotels/hotels.dto';
 import { ParseObjectIdPipe } from 'src/api/pipes/parse-objectid.pipe';
 import { ID } from 'src/common/types';
+import { Roles } from 'src/api/auth/roles.decorator';
+import { RolesGuard } from 'src/api/auth/roles.guard';
 
 @Controller('admin/hotel-rooms')
+@Roles('admin')
+@UseGuards(RolesGuard)
 export class HotelRoomsController {
     constructor(
         private readonly hotelRoomsService: HotelRoomsService,

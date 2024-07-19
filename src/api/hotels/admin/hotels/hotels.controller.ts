@@ -1,9 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { HotelsService } from 'src/modules/hotels/services';
 import { CreateHotelRequest, UpdateHotelRequest } from './hotels.dto';
 import { ParseObjectIdPipe } from 'src/api/pipes/parse-objectid.pipe';
+import { Roles } from 'src/api/auth/roles.decorator';
+import { RolesGuard } from 'src/api/auth/roles.guard';
 
 @Controller('admin/hotels')
+@Roles('admin')
+@UseGuards(RolesGuard)
 export class HotelsController {
     constructor(
         private readonly hotelsService: HotelsService,

@@ -9,7 +9,10 @@ import { HotelsModule } from './modules/hotels/hotels.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { UsersModule } from './modules/users/users.module';
 import { ApiModule } from './api/api.module';
-import { AuthModule } from './modules/auth/auth.module';
+import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
+import * as passport from "passport";
+import { randomBytes } from 'crypto';
 
 @Module({
   imports: [
@@ -25,13 +28,23 @@ import { AuthModule } from './modules/auth/auth.module';
     ReservationsModule,
     ChatsModule,
     ApiModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RequestsLoggerMiddleware).forRoutes('*');
+    consumer
+      .apply(RequestsLoggerMiddleware).forRoutes('*')
+      .apply(
+        cookieParser(),
+        session({
+          secret: process.env.SESSION_SECRET || randomBytes(32).toString('hex'),
+          resave: false,
+          saveUninitialized: false,
+        }),
+        passport.initialize(),
+        passport.session()
+      ).forRoutes('*');
   }
 }

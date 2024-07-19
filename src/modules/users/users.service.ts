@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon2 from "argon2";
 import { Model } from 'mongoose';
@@ -22,40 +22,59 @@ export class UsersService implements IUserService {
         const created = new this.userModel({ ...data, passwordHash: await argon2.hash(data.password) });
         await created.save();
 
-        return new UserDto(created.toObject());
+        return UserDto.from(created);
     }
+
+    async validatePassword(email: string, password: string): Promise<UserDto> {
+        const user = await this.userModel.findOne({ email });
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+
+        if (!await argon2.verify(user.passwordHash, password)) {
+            throw new UnauthorizedException();
+        }
+
+        return UserDto.from(user);
+    }
+
     async findById(id: ID): Promise<UserDto> {
         const user = await this.userModel.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        return new UserDto(user.toObject());
+        return UserDto.from(user);
     }
+
     async findByEmail(email: string): Promise<UserDto> {
         const user = await this.userModel.findOne({ email });
         if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        return new UserDto(user.toObject());
+        return UserDto.from(user);
     }
+
     async findAll(params: SearchUserParams): Promise<UserDto[]> {
         function escapeRegex(source: string) {
             return source.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
         }
 
         const users = await this.userModel
-            .find({
-                email: { $regex: new RegExp(escapeRegex(params.email), 'i') },
-                name: { $regex: new RegExp(escapeRegex(params.name), 'i') },
-                contactPhone: { $regex: new RegExp(escapeRegex(params.contactPhone), 'i') },
-            })
+            .find(
+                {
+                    email: { $regex: new RegExp(escapeRegex(params.email), 'i') },
+                    name: { $regex: new RegExp(escapeRegex(params.name), 'i') },
+                    contactPhone: { $regex: new RegExp(escapeRegex(params.contactPhone), 'i') },
+                },
+                { passwordHash: 0 }
+            )
             .skip(params.offset)
             .limit(params.limit)
             .exec();
 
-        return users.map(user => new UserDto(user.toObject()));
+        return users.map(user => UserDto.from(user));
     }
 }
 
