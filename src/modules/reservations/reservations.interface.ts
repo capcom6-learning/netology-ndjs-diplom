@@ -9,7 +9,7 @@ export interface SearchReservationParams {
 
 export interface RemoveReservationParams {
     id: ID;
-    userId: ID;
+    userId?: ID;
 }
 
 export interface IReservationService {

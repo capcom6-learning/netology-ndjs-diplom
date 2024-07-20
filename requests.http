@@ -17,8 +17,8 @@ POST {{baseUrl}}/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "test@example.com",
-    "password": "test"
+    "email": "manager@example.com",
+    "password": "manager"
 }
 
 ###
@@ -122,3 +122,9 @@ Content-Type: application/json
 
 ###
 DELETE {{baseUrl}}/client/reservations/669b37a0163afaa6d17f384e HTTP/1.1
+
+###
+GET {{baseUrl}}/manager/reservations/6699ec238e6626c294b22146 HTTP/1.1
+
+###
+DELETE {{baseUrl}}/manager/reservations/669b37a6163afaa6d17f3855 HTTP/1.1

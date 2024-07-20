@@ -47,10 +47,16 @@ export class ReservationsService implements IReservationService {
     }
 
     async removeReservation(filter: RemoveReservationParams): Promise<void> {
-        await this.reservationModel.findByIdAndDelete({
-            _id: filter.id,
-            user: filter.userId,
-        });
+        const reservation = await this.reservationModel.findById(filter.id);
+        if (!reservation) {
+            throw new BadRequestException('Reservation not found');
+        }
+
+        if (filter.userId && reservation.user.toString() !== filter.userId) {
+            throw new BadRequestException('Reservation not found');
+        }
+
+        await this.reservationModel.findByIdAndDelete(filter.id);
     }
 
     async getReservations(filter: SearchReservationParams): Promise<ReservationDto[]> {
