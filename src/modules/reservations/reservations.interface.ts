@@ -1,14 +1,19 @@
 import { ID } from "src/common/types";
-import { ReservationDto } from "./reservations.dto";
+import { CreateReservationDto, ReservationDto } from "./reservations.dto";
 
 export interface SearchReservationParams {
     userId: ID;
-    dateStart: Date;
-    dateEnd: Date;
+    dateStart?: Date;
+    dateEnd?: Date;
+}
+
+export interface RemoveReservationParams {
+    id: ID;
+    userId: ID;
 }
 
 export interface IReservationService {
-    addReservation(data: ReservationDto): Promise<ReservationDto>;
-    removeReservation(id: ID): Promise<void>;
+    addReservation(data: CreateReservationDto): Promise<ReservationDto>;
+    removeReservation(filter: RemoveReservationParams): Promise<void>;
     getReservations(filter: SearchReservationParams): Promise<ReservationDto[]>;
 }

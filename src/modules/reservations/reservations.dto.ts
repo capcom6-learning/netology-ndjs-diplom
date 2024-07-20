@@ -3,22 +3,46 @@ import { ReservationDocument } from "./reservations.model";
 
 export class ReservationDto {
     id: ID;
-    userId: ID;
-    roomId: ID;
+    hotelRoom: {
+        description?: string;
+        images: string[];
+    };
+    hotel: {
+        title: string;
+        description?: string;
+    };
     dateStart: Date;
     dateEnd: Date;
 
     constructor(reservation: ReservationDto) {
         this.id = reservation.id;
-        this.userId = reservation.userId;
-        this.roomId = reservation.roomId;
         this.dateStart = reservation.dateStart;
         this.dateEnd = reservation.dateEnd;
+
+        this.hotelRoom = {
+            description: reservation.hotelRoom.description,
+            images: reservation.hotelRoom.images
+        };
+
+        this.hotel = {
+            title: reservation.hotel.title,
+            description: reservation.hotel.description
+        };
     }
 
     static from(reservation: ReservationDocument): ReservationDto {
-        return new ReservationDto(reservation.toObject({ getters: true }));
+        const { room, hotel, ...rest } = reservation.toObject({ getters: true });
+
+        return new ReservationDto({
+            ...rest,
+            id: reservation.id,
+            hotelRoom: room,
+            hotel: hotel
+        });
     }
 }
 
-export type CreateReservationDto = Omit<ReservationDto, 'id'>;
+export type CreateReservationDto = Omit<ReservationDto, 'id' | 'hotel' | 'hotelRoom'> & {
+    userId: ID,
+    roomId: ID
+};

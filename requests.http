@@ -119,3 +119,6 @@ Content-Type: application/json
     "startDate": "{{$datetime iso8601}}",
     "endDate": "{{$datetime iso8601}}"
 }
+
+###
+DELETE {{baseUrl}}/client/reservations/669b37a0163afaa6d17f384e HTTP/1.1

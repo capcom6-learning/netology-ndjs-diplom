@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ID } from 'src/common/types';
 import { CreateReservationDto, ReservationDto } from './reservations.dto';
-import { IReservationService, SearchReservationParams } from './reservations.interface';
+import { IReservationService, RemoveReservationParams, SearchReservationParams } from './reservations.interface';
 import { Reservation } from './reservations.model';
 import { HotelRoomsService } from '../hotels/services';
 
@@ -41,22 +41,33 @@ export class ReservationsService implements IReservationService {
             room: room.id,
             hotel: room.hotel.id,
         });
-        (await reservation.save()).populate('hotel room');
+        await (await reservation.save()).populate(['room', 'hotel']);
 
         return ReservationDto.from(reservation);
     }
 
-    async removeReservation(id: ID): Promise<void> {
-        await this.reservationModel.findByIdAndDelete(id);
+    async removeReservation(filter: RemoveReservationParams): Promise<void> {
+        await this.reservationModel.findByIdAndDelete({
+            _id: filter.id,
+            user: filter.userId,
+        });
     }
 
     async getReservations(filter: SearchReservationParams): Promise<ReservationDto[]> {
+        const query: {
+            user: ID;
+            dateStart?: Date;
+            dateEnd?: Date;
+        } = {
+            user: filter.userId,
+        };
+
+        filter.dateEnd && (query.dateEnd = filter.dateEnd);
+        filter.dateStart && (query.dateStart = filter.dateStart);
+
         const reservations = await this.reservationModel
-            .find({
-                userId: filter.userId,
-                dateStart: { $lte: filter.dateEnd },
-                dateEnd: { $gte: filter.dateStart },
-            })
+            .find(query)
+            .populate(['room', 'hotel'])
             .exec();
 
         return reservations.map(reservation => ReservationDto.from(reservation));
