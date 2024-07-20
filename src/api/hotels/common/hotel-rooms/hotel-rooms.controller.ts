@@ -2,6 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ParseObjectIdPipe } from 'src/api/pipes/parse-objectid.pipe';
 import { ID } from 'src/common/types';
 import { HotelRoomsService } from 'src/modules/hotels/services';
+import { HotelRoomResponse } from './hotel-rooms.dto';
 
 @Controller('common/hotel-rooms')
 export class HotelRoomsController {
@@ -17,13 +18,13 @@ export class HotelRoomsController {
             hotel: params.hotel
         });
 
-        return rooms;
+        return rooms.map((room) => HotelRoomResponse.from(room));
     }
 
     @Get(':id')
     async getById(@Param('id', ParseObjectIdPipe) id: ID) {
         const room = await this.hotelRoomsService.findById(id);
 
-        return room;
+        return HotelRoomResponse.from(room);
     }
 }

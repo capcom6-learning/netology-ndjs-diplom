@@ -27,6 +27,7 @@ export class AuthController {
 
     @UseGuards(RolesGuard)
     @Post('auth/logout')
+    @HttpCode(200)
     async logout(@Request() req) {
         req.logOut({ keepSessionInfo: false }, (err) => {
             if (err) {

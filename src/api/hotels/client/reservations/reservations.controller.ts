@@ -1,16 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Roles } from 'src/api/auth/roles.decorator';
+import { RolesGuard } from 'src/api/auth/roles.guard';
+import { User } from 'src/api/decorators/user.decorator';
 import { ReservationsService } from 'src/modules/reservations/reservations.service';
-import { CreateUserDto } from 'src/modules/users/users.dto';
+import { CreateUserDto, UserDto } from 'src/modules/users/users.dto';
 
 @Controller('client/reservations')
+@UseGuards(RolesGuard)
+@Roles('client')
 export class ReservationsController {
     constructor(
         private readonly reservationsService: ReservationsService
     ) { }
 
     @Get()
-    async get() {
-        return [];
+    async get(@User() user: UserDto) {
+        return user;
     }
 
     @Post()
