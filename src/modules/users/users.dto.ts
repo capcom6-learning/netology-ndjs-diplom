@@ -1,12 +1,15 @@
+import { ID } from "src/common/types";
 import { Role, User, UserDocument } from "./users.model";
 
 export class UserDto {
+    id: ID;
     email: string;
     name: string;
     contactPhone?: string;
     role: Role;
 
     constructor(data: Partial<UserDto>) {
+        this.id = data.id;
         this.email = data.email;
         this.name = data.name;
         this.contactPhone = data.contactPhone;
@@ -18,6 +21,4 @@ export class UserDto {
     }
 }
 
-export class CreateUserDto extends UserDto {
-    password: string;
-}
+export type CreateUserDto = Omit<UserDto, 'id'> & { password: string }

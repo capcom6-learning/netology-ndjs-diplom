@@ -8,8 +8,8 @@ POST {{baseUrl}}/client/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "manager@example.com",
-    "password": "manager"
+    "email": "test@example.com",
+    "password": "test"
 }
 
 ###
@@ -109,3 +109,13 @@ Content-Type: image/jpeg
 
 ###
 GET {{baseUrl}}/client/reservations HTTP/1.1
+
+###
+POST {{baseUrl}}/client/reservations HTTP/1.1
+Content-Type: application/json
+
+{
+    "hotelRoom": "66945bee31a60498b7814af6",
+    "startDate": "{{$datetime iso8601}}",
+    "endDate": "{{$datetime iso8601}}"
+}

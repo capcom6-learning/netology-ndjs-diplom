@@ -18,3 +18,4 @@ export class Reservation {
 }
 
 export const ReservationModel = SchemaFactory.createForClass(Reservation);
+export type ReservationDocument = mongoose.HydratedDocument<Reservation>;

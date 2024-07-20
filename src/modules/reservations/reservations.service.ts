@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ID } from 'src/common/types';
-import { ReservationDto } from './reservations.dto';
+import { CreateReservationDto, ReservationDto } from './reservations.dto';
 import { IReservationService, SearchReservationParams } from './reservations.interface';
 import { Reservation } from './reservations.model';
 import { HotelRoomsService } from '../hotels/services';
@@ -14,31 +14,42 @@ export class ReservationsService implements IReservationService {
         private readonly hotelRoomsService: HotelRoomsService,
     ) { }
 
-    async addReservation(data: ReservationDto): Promise<ReservationDto> {
+    async addReservation(data: CreateReservationDto): Promise<ReservationDto> {
         const room = await this.hotelRoomsService.findById(data.roomId);
         if (!room) {
-            throw new Error('Room not found');
+            throw new NotFoundException('Room not found');
+        }
+
+        if (!room.isEnabled) {
+            throw new BadRequestException('Room is not available');
         }
 
         const existingReservation = await this.reservationModel.findOne({
-            hotelId: room.hotel,
-            roomId: data.roomId,
+            hotel: room.hotel.id,
+            room: data.roomId,
             dateStart: { $lte: data.dateEnd },
             dateEnd: { $gte: data.dateStart },
         });
 
         if (existingReservation) {
-            throw new Error('Reservation already exists');
+            throw new BadRequestException('Reservation already exists');
         }
 
-        const reservation = new this.reservationModel(data);
-        await reservation.save();
+        const reservation = new this.reservationModel({
+            ...data,
+            user: data.userId,
+            room: room.id,
+            hotel: room.hotel.id,
+        });
+        (await reservation.save()).populate('hotel room');
 
-        return new ReservationDto(reservation.toObject());
+        return ReservationDto.from(reservation);
     }
+
     async removeReservation(id: ID): Promise<void> {
         await this.reservationModel.findByIdAndDelete(id);
     }
+
     async getReservations(filter: SearchReservationParams): Promise<ReservationDto[]> {
         const reservations = await this.reservationModel
             .find({
@@ -48,6 +59,6 @@ export class ReservationsService implements IReservationService {
             })
             .exec();
 
-        return reservations.map(reservation => new ReservationDto(reservation.toObject()));
+        return reservations.map(reservation => ReservationDto.from(reservation));
     }
 }
