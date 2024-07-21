@@ -4,9 +4,9 @@ import { CreateUserDto, UserDto } from "./users.dto";
 export interface SearchUserParams {
     limit: number;
     offset: number;
-    email: string;
-    name: string;
-    contactPhone: string;
+    email?: string;
+    name?: string;
+    contactPhone?: string;
 }
 
 export interface IUserService {

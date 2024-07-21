@@ -61,13 +61,14 @@ export class UsersService implements IUserService {
             return source.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
         }
 
+        const query: { email?: RegExp; name?: RegExp; contactPhone?: RegExp } = {};
+        params.contactPhone && (query.contactPhone = new RegExp(escapeRegex(params.contactPhone), 'i'));
+        params.email && (query.email = new RegExp(escapeRegex(params.email), 'i'));
+        params.name && (query.name = new RegExp(escapeRegex(params.name), 'i'));
+
         const users = await this.userModel
             .find(
-                {
-                    email: { $regex: new RegExp(escapeRegex(params.email), 'i') },
-                    name: { $regex: new RegExp(escapeRegex(params.name), 'i') },
-                    contactPhone: { $regex: new RegExp(escapeRegex(params.contactPhone), 'i') },
-                },
+                query,
                 { passwordHash: 0 }
             )
             .skip(params.offset)
