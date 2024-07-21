@@ -20,20 +20,19 @@ export class SupportRequestsService implements ISupportRequestService {
     async findSupportRequests(params: GetChatListParams): Promise<SupportRequestDto[]> {
         const query: {
             user?: ID;
-            isActive: boolean;
-        } = {
-            isActive: params.isActive,
-        };
+            isActive?: boolean;
+        } = {};
 
-        if (params.user) {
-            query.user = params.user;
-        }
+        params.user && (query.user = params.user);
+        params.isActive !== undefined && (query.isActive = params.isActive);
 
         const supportRequests = await this.supportRequestModel
             .find(query, { messages: false })
+            .limit(params.limit)
+            .skip(params.offset)
             .exec();
 
-        return supportRequests.map(supportRequest => new SupportRequestDto(supportRequest.toObject()));
+        return supportRequests.map(supportRequest => SupportRequestDto.from(supportRequest));
     }
 
     async sendMessage(data: SendMessageDto): Promise<MessageDto> {
@@ -64,7 +63,7 @@ export class SupportRequestsService implements ISupportRequestService {
     }
 
     subscribe(handler: (supportRequest: SupportRequestDto, message: MessageDto) => void): () => void {
-        const listener = ({ supportRequest, message }) => handler(new SupportRequestDto(supportRequest), new MessageDto(message));
+        const listener = ({ supportRequest, message }) => handler(SupportRequestDto.from(supportRequest), new MessageDto(message));
 
         this.eventsEmitter.on(
             'message',

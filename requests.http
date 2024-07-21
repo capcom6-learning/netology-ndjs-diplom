@@ -17,8 +17,8 @@ POST {{baseUrl}}/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "manager@example.com",
-    "password": "manager"
+    "email": "test@example.com",
+    "password": "test"
 }
 
 ###
@@ -144,3 +144,14 @@ GET {{baseUrl}}/admin/users HTTP/1.1
 
 ###
 GET {{baseUrl}}/manager/users HTTP/1.1
+
+###
+POST {{baseUrl}}/client/support-requests HTTP/1.1
+Content-Type: application/json
+
+{
+    "text": "Text {{$guid}}"
+}
+
+###
+GET {{baseUrl}}/client/support-requests HTTP/1.1

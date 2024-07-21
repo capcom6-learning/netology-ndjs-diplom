@@ -15,5 +15,10 @@ import { SupportRequestsClientService, SupportRequestsEmployeeService, SupportRe
         SupportRequestsClientService,
         SupportRequestsEmployeeService,
     ],
+    exports: [
+        SupportRequestsService,
+        SupportRequestsClientService,
+        SupportRequestsEmployeeService,
+    ],
 })
 export class ChatsModule { }

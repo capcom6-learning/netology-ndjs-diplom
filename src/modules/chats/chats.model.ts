@@ -28,3 +28,6 @@ export class Message {
 
 export const SupportRequestModel = SchemaFactory.createForClass(SupportRequest);
 export const MessageModel = SchemaFactory.createForClass(Message);
+
+export type SupportRequestDocument = mongoose.HydratedDocument<SupportRequest>;
+export type MessageDocument = mongoose.HydratedDocument<Message>;

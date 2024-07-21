@@ -1,4 +1,5 @@
 import { ID } from "src/common/types";
+import { SupportRequestDocument } from "./chats.model";
 
 export class SupportRequestDto {
     id: ID;
@@ -6,10 +7,16 @@ export class SupportRequestDto {
     isActive: boolean;
 
     createdAt: Date;
-    updatedAt: Date;
 
-    constructor(data: Partial<SupportRequestDto>) {
-        Object.assign(this, data);
+    protected constructor(data: Partial<SupportRequestDto>) {
+        this.id = data.id;
+        this.user = data.user;
+        this.isActive = data.isActive;
+        this.createdAt = data.createdAt;
+    }
+
+    static from(data: SupportRequestDocument): SupportRequestDto {
+        return new SupportRequestDto(data.toObject({ getters: true }));
     }
 }
 

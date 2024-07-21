@@ -1,11 +1,11 @@
 import { ID } from "src/common/types";
 import { CreateSupportRequestDto, MarkMessagesAsReadDto, MessageDto, SendMessageDto, SupportRequestDto } from "./chats.dto";
 
-
-
 export interface GetChatListParams {
     user: ID | null;
-    isActive: boolean;
+    limit?: number;
+    offset?: number;
+    isActive?: boolean;
 }
 
 export interface ISupportRequestService {
@@ -20,7 +20,7 @@ export interface ISupportRequestService {
 export interface ISupportRequestClientService {
     createSupportRequest(data: CreateSupportRequestDto): Promise<SupportRequestDto>;
     markMessagesAsRead(params: MarkMessagesAsReadDto): Promise<void>;
-    getUnreadCount(supportRequest: ID): Promise<number>;
+    getUnreadCount(userId: ID, supportRequest: ID): Promise<number>;
 }
 
 export interface ISupportRequestEmployeeService {
