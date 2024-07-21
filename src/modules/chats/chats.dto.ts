@@ -1,35 +1,56 @@
 import { ID } from "src/common/types";
-import { SupportRequestDocument } from "./chats.model";
+import { MessageDocument, SupportRequestDocument } from "./chats.model";
+import { UserDto } from "../users/users.dto";
 
 export class SupportRequestDto {
     id: ID;
-    user: ID;
     isActive: boolean;
+
+    author?: UserDto;
 
     createdAt: Date;
 
     protected constructor(data: Partial<SupportRequestDto>) {
         this.id = data.id;
-        this.user = data.user;
         this.isActive = data.isActive;
+        this.author = data.author;
         this.createdAt = data.createdAt;
     }
 
     static from(data: SupportRequestDocument): SupportRequestDto {
-        return new SupportRequestDto(data.toObject({ getters: true }));
+        const request = data.toObject({ getters: true });
+
+        console.log(request.user);
+
+        return new SupportRequestDto({
+            ...request,
+            author: request.user ? new UserDto(request.user) : undefined
+        });
     }
 }
 
 export class MessageDto {
     id: ID;
-    author: ID;
+    author: UserDto;
     text: string;
 
     sentAt: Date;
     readAt?: Date;
 
     constructor(data: Partial<MessageDto>) {
-        Object.assign(this, data);
+        this.id = data.id;
+        this.author = data.author;
+        this.text = data.text;
+        this.sentAt = data.sentAt;
+        this.readAt = data.readAt;
+    }
+
+    static from(data: MessageDocument): MessageDto {
+        const message = data.toObject({ getters: true });
+        return new MessageDto({
+            ...message,
+            author: new UserDto(message.author)
+        });
     }
 }
 

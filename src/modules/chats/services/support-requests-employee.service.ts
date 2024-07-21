@@ -4,11 +4,14 @@ import { Model } from 'mongoose';
 import { ID } from 'src/common/types';
 import { MarkMessagesAsReadDto } from '../chats.dto';
 import { ISupportRequestEmployeeService } from '../chats.interface';
-import { SupportRequest } from '../chats.model';
+import { Message, SupportRequest } from '../chats.model';
+import { User } from 'src/modules/users/users.model';
 
 @Injectable()
 export class SupportRequestsEmployeeService implements ISupportRequestEmployeeService {
     constructor(
+        @InjectModel(User.name) private readonly userModel: Model<User>,
+        @InjectModel(Message.name) private readonly messageModel: Model<Message>,
         @InjectModel(SupportRequest.name) private readonly supportRequestModel: Model<SupportRequest>,
     ) { }
 
@@ -17,7 +20,12 @@ export class SupportRequestsEmployeeService implements ISupportRequestEmployeeSe
     }
 
     async getUnreadCount(supportRequest: ID): Promise<number> {
-        throw new Error('Method not implemented.');
+        const managers = await this.userModel.find({ role: 'client' });
+
+        const messagesCount = await this.messageModel
+            .countDocuments({ supportRequest, author: { $nin: managers }, readAt: null });
+
+        return messagesCount;
     }
 
     async closeRequest(supportRequest: ID): Promise<void> {

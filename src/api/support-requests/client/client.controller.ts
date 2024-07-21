@@ -33,7 +33,7 @@ export class ClientController {
         return Promise.all(requests.map(async (request) => {
             return {
                 ...request,
-                hasNewMessages: (await this.supportRequestsClientService.getUnreadCount(user.id, request.id)) > 0,
+                hasNewMessages: (await this.supportRequestsClientService.getUnreadCount(request.id)) > 0,
             };
         }));
     }

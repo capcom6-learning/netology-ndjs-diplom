@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventEmitter } from 'events';
 import { Model } from 'mongoose';
@@ -28,6 +28,7 @@ export class SupportRequestsService implements ISupportRequestService {
 
         const supportRequests = await this.supportRequestModel
             .find(query, { messages: false })
+            .populate('user')
             .limit(params.limit)
             .skip(params.offset)
             .exec();
@@ -55,11 +56,15 @@ export class SupportRequestsService implements ISupportRequestService {
         const supportRequest = await this.supportRequestModel
             .findOne({ _id: supportRequestId });
         if (!supportRequest) {
-            throw new Error('Support request not found');
+            throw new NotFoundException('Support request not found');
         }
 
-        // return supportRequest.messages.map(message => new MessageDto({...message, user: message.author.id}));
-        throw new Error('Method not implemented.');
+        const messages = await this.messageModel
+            .find({ _id: { $in: supportRequest.messages } })
+            .populate('author')
+            .exec();
+
+        return messages.map(message => MessageDto.from(message));
     }
 
     subscribe(handler: (supportRequest: SupportRequestDto, message: MessageDto) => void): () => void {

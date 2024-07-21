@@ -2,7 +2,7 @@ import { ID } from "src/common/types";
 import { CreateSupportRequestDto, MarkMessagesAsReadDto, MessageDto, SendMessageDto, SupportRequestDto } from "./chats.dto";
 
 export interface GetChatListParams {
-    user: ID | null;
+    user?: ID;
     limit?: number;
     offset?: number;
     isActive?: boolean;
