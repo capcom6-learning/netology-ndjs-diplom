@@ -9,7 +9,7 @@ export class UserDto {
     role: Role;
 
     constructor(data: Partial<UserDto>) {
-        this.id = data.id;
+        this.id = data.id.toString();
         this.email = data.email;
         this.name = data.name;
         this.contactPhone = data.contactPhone;

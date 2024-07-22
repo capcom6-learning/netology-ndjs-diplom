@@ -7,6 +7,7 @@ import * as path from 'path';
 import { HotelsModule } from 'src/modules/hotels/hotels.module';
 import { HotelRoomsController } from './hotel-rooms/hotel-rooms.controller';
 import { HotelsController } from './hotels/hotels.controller';
+import { EnvConfig } from 'src/types';
 
 @Module({
     imports: [

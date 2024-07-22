@@ -17,22 +17,52 @@ export class SupportRequestsClientService implements ISupportRequestClientServic
 
     async createSupportRequest(data: CreateSupportRequestDto): Promise<SupportRequestDto> {
         const supportRequest = new this.supportRequestModel(data);
-        await supportRequest.save();
+        await (await supportRequest.save()).populate('user');
 
         return SupportRequestDto.from(supportRequest);
     }
 
     async markMessagesAsRead(params: MarkMessagesAsReadDto): Promise<void> {
-        throw new Error('Method not implemented.');
+        const managers = await this.userModel.find({ role: 'manager' });
+
+        const request = await this.supportRequestModel
+            .findOne({ _id: params.supportRequest })
+            .populate({
+                path: 'messages',
+                match: {
+                    author: { $in: managers },
+                    readAt: null,
+                    sentAt: { $lt: params.createdBefore }
+                }
+            });
+
+        if (!request) {
+            return;
+        }
+
+        await this.messageModel
+            .updateMany(
+                {
+                    _id: { $in: request.messages },
+                },
+                { readAt: new Date() }
+            );
     }
 
     async getUnreadCount(supportRequest: ID): Promise<number> {
         const managers = await this.userModel.find({ role: 'manager' });
 
-        const messagesCount = await this.messageModel
-            .countDocuments({ supportRequest, author: { $in: managers }, readAt: null });
+        const request = await this.supportRequestModel
+            .findOne({ _id: supportRequest })
+            .populate({
+                path: 'messages',
+                match: {
+                    author: { $in: managers },
+                    readAt: null
+                }
+            });
 
-        return messagesCount;
+        return request.messages.length;
     }
 
 }

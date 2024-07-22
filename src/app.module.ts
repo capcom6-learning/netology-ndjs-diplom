@@ -13,6 +13,7 @@ import { ChatsModule } from './modules/chats/chats.module';
 import { HotelsModule } from './modules/hotels/hotels.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { UsersModule } from './modules/users/users.module';
+import { EnvConfig } from './types';
 
 const MongoStore = require("connect-mongo");
 

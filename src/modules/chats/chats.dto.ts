@@ -20,8 +20,6 @@ export class SupportRequestDto {
     static from(data: SupportRequestDocument): SupportRequestDto {
         const request = data.toObject({ getters: true });
 
-        console.log(request.user);
-
         return new SupportRequestDto({
             ...request,
             author: request.user ? new UserDto(request.user) : undefined

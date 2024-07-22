@@ -43,10 +43,11 @@ export class SupportRequestsService implements ISupportRequestService {
         }
 
         const message = new this.messageModel(data);
+        await (await message.save()).populate('author');
         supportRequest.messages.push(message);
         await supportRequest.save();
 
-        const messageDto = new MessageDto(message.toObject());
+        const messageDto = MessageDto.from(message);
         this.eventsEmitter.emit('message', { supportRequest: supportRequest.toObject(), message: messageDto });
 
         return messageDto;

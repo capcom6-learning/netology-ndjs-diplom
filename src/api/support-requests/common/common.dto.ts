@@ -1,6 +1,14 @@
 import { ID } from "src/common/types";
 import { MessageDto } from "src/modules/chats/chats.dto";
 
+export class SendMessageRequest {
+    text: string;
+}
+
+export class ReadMessagesRequest {
+    createdBefore: Date;
+}
+
 export class MessageResponse {
     id: ID;
     createdAt: Date;
@@ -21,6 +29,6 @@ export class MessageResponse {
     }
 
     static from(data: MessageDto) {
-        return new MessageResponse(data);
+        return new MessageResponse({ ...data, createdAt: data.sentAt });
     }
 }
