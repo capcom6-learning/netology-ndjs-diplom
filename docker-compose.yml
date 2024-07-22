@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  app:
+    container_name: nestjs-app
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URL=mongodb://mongodb:27017/hotels
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_DATABASE=hotels
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  mongodb-data:
