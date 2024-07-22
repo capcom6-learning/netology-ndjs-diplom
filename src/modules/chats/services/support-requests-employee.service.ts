@@ -59,7 +59,7 @@ export class SupportRequestsEmployeeService implements ISupportRequestEmployeeSe
     }
 
     async closeRequest(supportRequest: ID): Promise<void> {
-        throw new Error('Method not implemented.');
+        await this.supportRequestModel.updateOne({ _id: supportRequest }, { isActive: false });
     }
 
 }
