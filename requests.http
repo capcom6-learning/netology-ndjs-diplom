@@ -17,8 +17,8 @@ POST {{baseUrl}}/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "test@example.com",
-    "password": "test"
+    "email": "manager@example.com",
+    "password": "manager"
 }
 
 ###
@@ -163,7 +163,7 @@ GET {{baseUrl}}/manager/support-requests HTTP/1.1
 GET {{baseUrl}}/common/support-requests/669cd464370e7ff4f2e3a5c6/messages HTTP/1.1
 
 ###
-POST {{baseUrl}}/common/support-requests/669cd464370e7ff4f2e3a5c6/messages HTTP/1.1
+POST {{baseUrl}}/common/support-requests/669da48b8690b5a677a3940a/messages HTTP/1.1
 Content-Type: application/json
 
 {

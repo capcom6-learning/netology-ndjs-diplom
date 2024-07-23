@@ -1,6 +1,6 @@
 import { ID } from "src/common/types";
-import { MessageDocument, SupportRequestDocument } from "./chats.model";
 import { UserDto } from "../users/users.dto";
+import { MessageDocument, SupportRequestDocument } from "./chats.model";
 
 export class SupportRequestDto {
     id: ID;

@@ -38,19 +38,6 @@ const MongoStore = require("connect-mongo");
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
-      .apply(RequestsLoggerMiddleware).forRoutes('*')
-      .apply(
-        cookieParser(),
-        session({
-          secret: process.env.SESSION_SECRET || randomBytes(32).toString('hex'),
-          resave: false,
-          saveUninitialized: false,
-          store: MongoStore.create({
-            mongoUrl: process.env.MONGO_URL || 'mongodb://localhost:27017/hotels',
-          })
-        }),
-        passport.initialize(),
-        passport.session()
-      ).forRoutes('*');
+      .apply(RequestsLoggerMiddleware).forRoutes('*');
   }
 }

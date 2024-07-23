@@ -48,7 +48,7 @@ export class SupportRequestsService implements ISupportRequestService {
         await supportRequest.save();
 
         const messageDto = MessageDto.from(message);
-        this.eventsEmitter.emit('message', { supportRequest: supportRequest.toObject(), message: messageDto });
+        this.eventsEmitter.emit('message', { supportRequest: SupportRequestDto.from(supportRequest), message: messageDto });
 
         return messageDto;
     }
@@ -69,7 +69,7 @@ export class SupportRequestsService implements ISupportRequestService {
     }
 
     subscribe(handler: (supportRequest: SupportRequestDto, message: MessageDto) => void): () => void {
-        const listener = ({ supportRequest, message }) => handler(SupportRequestDto.from(supportRequest), new MessageDto(message));
+        const listener = ({ supportRequest, message }) => handler(supportRequest, message);
 
         this.eventsEmitter.on(
             'message',
